@@ -14,12 +14,12 @@ func main() {
 		pathToYml = os.Args[1]
 	}
 
-	config, err := routing.ReadConfig(pathToYml)
+	setting, err := routing.ReadSetting(pathToYml)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	routing.LoggingConfig(config)
+	routing.LoggingSetting(setting)
 
-	routing.RunServer(config.Cfg.Port)
+	routing.RunServer(setting.Config.Port)
 }

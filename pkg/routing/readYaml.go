@@ -12,34 +12,34 @@ type Route struct {
 	File string
 }
 
-type Config struct {
-	Cfg struct {
+type Setting struct {
+	Config struct {
 		Port string
-	}
+	} `yaml:"cfg"`
 	Routes []Route
 }
 
-func ReadConfig(filename string) (Config, error) {
+func ReadSetting(filename string) (Setting, error) {
 	buf, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return Config{}, err
+		return Setting{}, err
 	}
 
-	return ReadConfigFromYaml(buf)
+	return readSettingFromYaml(buf)
 }
 
-func ReadConfigFromYaml(fileBuffer []byte) (Config, error) {
-	setting := Config{}
+func readSettingFromYaml(fileBuffer []byte) (Setting, error) {
+	setting := Setting{}
 	err := yaml.Unmarshal(fileBuffer, &setting)
 	if err != nil {
 		fmt.Println(err)
-		return Config{}, err
+		return Setting{}, err
 	}
 	return setting, nil
 }
 
-func LoggingConfig(c Config) {
-	fmt.Printf("Port = %s\n", c.Cfg.Port)
+func LoggingSetting(c Setting) {
+	fmt.Printf("Port = %s\n", c.Config.Port)
 	for _, route := range c.Routes {
 		fmt.Printf("path = %s, file = %s\n", route.Path, route.File)
 	}
