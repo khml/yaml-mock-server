@@ -37,3 +37,10 @@ func ReadConfigFromYaml(fileBuffer []byte) (Config, error) {
 	}
 	return setting, nil
 }
+
+func LoggingConfig(c Config) {
+	fmt.Printf("Port = %s\n", c.Cfg.Port)
+	for _, route := range c.Routes {
+		fmt.Printf("path = %s, file = %s\n", route.Path, route.File)
+	}
+}

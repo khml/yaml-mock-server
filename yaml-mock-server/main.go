@@ -14,10 +14,10 @@ func main() {
 		pathToYml = os.Args[1]
 	}
 
-	routes, err := routing.ReadConfig(pathToYml)
+	config, err := routing.ReadConfig(pathToYml)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(routes)
+	routing.LoggingConfig(config)
 }
