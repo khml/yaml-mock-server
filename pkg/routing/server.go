@@ -5,23 +5,28 @@ import (
 	"net/http"
 )
 
-func RunServer(port string) {
+func RunServer(setting Setting) {
 	println("Running Server now")
 
-	http.HandleFunc("/", helloWorld)
+	for _, route := range setting.Routes {
+		makeHandler(route)
+	}
 
-	_ = http.ListenAndServe(":"+port, nil)
+	_ = http.ListenAndServe(":"+setting.Config.Port, nil)
 }
 
 func loggingRequest(r *http.Request) {
 	log.Printf("[%s] %s FROM %s\n", r.Method, r.URL.Path, r.RemoteAddr)
 }
 
-func helloWorld(w http.ResponseWriter, r *http.Request) {
-	loggingRequest(r)
+func makeHandler(route Route) {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		loggingRequest(r)
 
-	_, err := w.Write([]byte("Hello World"))
-	if err != nil {
-		println(err)
+		_, err := w.Write([]byte(route.File))
+		if err != nil {
+			println(err)
+		}
 	}
+	http.HandleFunc(route.Path, fn)
 }
