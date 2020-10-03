@@ -1,6 +1,7 @@
 package routing
 
 import (
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -23,7 +24,14 @@ func makeHandler(route Route) {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		loggingRequest(r)
 
-		_, err := w.Write([]byte(route.File))
+		buf, err := ioutil.ReadFile(route.File)
+
+		if err != nil {
+			println(err)
+			return
+		}
+
+		_, err = w.Write(buf)
 		if err != nil {
 			println(err)
 		}
