@@ -1,0 +1,10 @@
+cfg:
+    port: 3000
+    public: true
+
+routes:
+  - path: /
+    file: home/index.html
+
+  - path: /hello
+    file: hello/index.html
