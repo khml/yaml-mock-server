@@ -20,4 +20,6 @@ func main() {
 		return
 	}
 	routing.LoggingConfig(config)
+
+	routing.RunServer(config.Cfg.Port)
 }

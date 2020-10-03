@@ -5,12 +5,12 @@ import (
 	"net/http"
 )
 
-func httpRouting() {
+func RunServer(port string) {
 	println("Running Server now")
 
 	http.HandleFunc("/", helloWorld)
 
-	_ = http.ListenAndServe(":3000", nil)
+	_ = http.ListenAndServe(":"+port, nil)
 }
 
 func loggingRequest(r *http.Request) {
