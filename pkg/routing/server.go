@@ -8,8 +8,15 @@ import (
 func RunServer(setting Setting) {
 	println("Running Server now")
 
-	for _, route := range setting.Routes {
-		makeHandler(route)
+	if setting.Config.Public {
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			loggingRequest(r)
+			http.ServeFile(w, r, r.URL.Path[1:])
+		})
+	} else {
+		for _, route := range setting.Routes {
+			makeHandler(route)
+		}
 	}
 
 	err := http.ListenAndServe(":"+setting.Config.Port, nil)

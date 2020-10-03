@@ -14,7 +14,8 @@ type Route struct {
 
 type Setting struct {
 	Config struct {
-		Port string
+		Port   string
+		Public bool
 	} `yaml:"cfg"`
 	Routes []Route
 }
@@ -40,6 +41,12 @@ func readSettingFromYaml(fileBuffer []byte) (Setting, error) {
 
 func LoggingSetting(c Setting) {
 	fmt.Printf("Port = %s\n", c.Config.Port)
+	fmt.Printf("Public = %t \n", c.Config.Public)
+
+	if c.Config.Public {
+		return
+	}
+
 	for _, route := range c.Routes {
 		fmt.Printf("path = %s, file = %s\n", route.Path, route.File)
 	}
