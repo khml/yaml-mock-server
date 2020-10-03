@@ -2,30 +2,14 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
-	"gopkg.in/yaml.v2"
+	"yaml-mock-server/pkg/routing"
 )
 
 func main() {
-	readRouting()
-}
-
-type Route struct {
-	Path string
-	File string
-}
-
-func readRouting() {
-	buf, err := ioutil.ReadFile("./sample.yml")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	routes, err := readRouteingFromYaml(buf)
+	routes, err := routing.ReadRouting("./sample.yml")
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -33,18 +17,7 @@ func readRouting() {
 	fmt.Println(routes)
 }
 
-func readRouteingFromYaml(fileBuffer []byte) ([]Route, error) {
-	defaultSize := 10
-	routes := make([]Route, defaultSize)
-	err := yaml.Unmarshal(fileBuffer, &routes)
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-	return routes, nil
-}
-
-func routing() {
+func httpRouting() {
 	println("Running Server now")
 
 	http.HandleFunc("/", helloWorld)
