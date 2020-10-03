@@ -1,7 +1,6 @@
 package routing
 
 import (
-	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -13,7 +12,10 @@ func RunServer(setting Setting) {
 		makeHandler(route)
 	}
 
-	_ = http.ListenAndServe(":"+setting.Config.Port, nil)
+	err := http.ListenAndServe(":"+setting.Config.Port, nil)
+	if err != nil {
+		println(err)
+	}
 }
 
 func loggingRequest(r *http.Request) {
@@ -23,18 +25,7 @@ func loggingRequest(r *http.Request) {
 func makeHandler(route Route) {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		loggingRequest(r)
-
-		buf, err := ioutil.ReadFile(route.File)
-
-		if err != nil {
-			println(err)
-			return
-		}
-
-		_, err = w.Write(buf)
-		if err != nil {
-			println(err)
-		}
+		http.ServeFile(w, r, route.File)
 	}
 	http.HandleFunc(route.Path, fn)
 }
