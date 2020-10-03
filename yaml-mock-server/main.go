@@ -1,20 +1,20 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"os"
 	"yaml-mock-server/pkg/routing"
 )
 
 func main() {
 	const defaultYmlConfig = "yms.yml"
 
-	var (
-		s = flag.String("c", defaultYmlConfig, "path to Routing YAML Config")
-	)
-	flag.Parse()
+	pathToYml := defaultYmlConfig
+	if len(os.Args) >= 2 {
+		pathToYml = os.Args[1]
+	}
 
-	routes, err := routing.ReadConfig(*s)
+	routes, err := routing.ReadConfig(pathToYml)
 	if err != nil {
 		fmt.Println(err)
 		return
