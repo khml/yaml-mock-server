@@ -14,7 +14,7 @@ func main() {
 	)
 	flag.Parse()
 
-	routes, err := routing.ReadRouting(*s)
+	routes, err := routing.ReadConfig(*s)
 	if err != nil {
 		fmt.Println(err)
 		return

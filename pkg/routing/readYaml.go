@@ -12,22 +12,28 @@ type Route struct {
 	File string
 }
 
-func ReadRouting(filename string) ([]Route, error) {
-	buf, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
+type Config struct {
+	Cfg struct {
+		Port string
 	}
-
-	return ReadRouteingFromYaml(buf)
+	Routes []Route
 }
 
-func ReadRouteingFromYaml(fileBuffer []byte) ([]Route, error) {
-	defaultSize := 10
-	routes := make([]Route, defaultSize)
-	err := yaml.Unmarshal(fileBuffer, &routes)
+func ReadConfig(filename string) (Config, error) {
+	buf, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return Config{}, err
+	}
+
+	return ReadConfigFromYaml(buf)
+}
+
+func ReadConfigFromYaml(fileBuffer []byte) (Config, error) {
+	setting := Config{}
+	err := yaml.Unmarshal(fileBuffer, &setting)
 	if err != nil {
 		fmt.Println(err)
-		return nil, err
+		return Config{}, err
 	}
-	return routes, nil
+	return setting, nil
 }
