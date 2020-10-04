@@ -16,6 +16,7 @@ type Setting struct {
 	Config struct {
 		Port   string
 		Public bool
+		Open   bool
 	} `yaml:"cfg"`
 	Routes []Route
 }

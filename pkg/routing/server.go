@@ -3,6 +3,8 @@ package routing
 import (
 	"log"
 	"net/http"
+	"os/exec"
+	"runtime"
 )
 
 func RunServer(setting Setting) {
@@ -17,6 +19,10 @@ func RunServer(setting Setting) {
 		for _, route := range setting.Routes {
 			makeHandler(route)
 		}
+	}
+
+	if setting.Config.Open {
+		_ = openBrowser(setting)
 	}
 
 	err := http.ListenAndServe(":"+setting.Config.Port, nil)
@@ -35,4 +41,33 @@ func makeHandler(route Route) {
 		http.ServeFile(w, r, route.File)
 	}
 	http.HandleFunc(route.Path, fn)
+}
+
+func openBrowser(setting Setting) error {
+	var url string = "http://localhost:" + setting.Config.Port
+
+	if setting.Config.Public {
+		url += "/"
+	} else {
+		if len(setting.Routes) > 0 {
+			url += setting.Routes[0].Path
+		}
+	}
+
+	var cmd string
+	var args []string
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = "cmd"
+		args = []string{"/c", "start"}
+	case "darwin":
+		cmd = "open"
+	case "linux":
+		cmd = "xdg-open"
+	default:
+		return nil
+	}
+	args = append(args, url)
+	return exec.Command(cmd, args...).Start()
 }

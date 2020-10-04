@@ -1,6 +1,7 @@
 cfg:
     port: 3000
     public: true
+    open: true
 
 routes:
   - path: /
