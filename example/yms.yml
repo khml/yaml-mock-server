@@ -1,7 +1,9 @@
 cfg:
     port: 3000
     public: true
-    open: true
+    browser:
+      open: true
+      openPath: /
 
 routes:
   - path: /

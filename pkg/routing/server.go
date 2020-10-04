@@ -21,7 +21,7 @@ func RunServer(setting Setting) {
 		}
 	}
 
-	if setting.Config.Open {
+	if setting.Config.Browser.Open {
 		_ = openBrowser(setting)
 	}
 
@@ -44,15 +44,7 @@ func makeHandler(route Route) {
 }
 
 func openBrowser(setting Setting) error {
-	var url string = "http://localhost:" + setting.Config.Port
-
-	if setting.Config.Public {
-		url += "/"
-	} else {
-		if len(setting.Routes) > 0 {
-			url += setting.Routes[0].Path
-		}
-	}
+	var url string = "http://localhost:" + setting.Config.Port + setting.Config.Browser.OpenPath
 
 	var cmd string
 	var args []string

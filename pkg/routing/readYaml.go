@@ -14,9 +14,12 @@ type Route struct {
 
 type Setting struct {
 	Config struct {
-		Port   string
-		Public bool
-		Open   bool
+		Port    string
+		Public  bool
+		Browser struct {
+			Open     bool
+			OpenPath string
+		}
 	} `yaml:"cfg"`
 	Routes []Route
 }
