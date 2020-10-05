@@ -1,7 +1,7 @@
 cfg:
   debug: false
   port: 3000
-  public: true
+  public: false
   browser:
     open: true
     openPath: /
