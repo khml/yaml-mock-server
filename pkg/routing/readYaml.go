@@ -12,15 +12,18 @@ type Route struct {
 	File string
 }
 
+type Config struct {
+	Debug   bool
+	Port    string
+	Public  bool
+	Browser struct {
+		Open     bool
+		OpenPath string `yaml:"openPath"`
+	}
+}
+
 type Setting struct {
-	Config struct {
-		Port    string
-		Public  bool
-		Browser struct {
-			Open     bool
-			OpenPath string
-		}
-	} `yaml:"cfg"`
+	Config Config `yaml:"cfg"`
 	Routes []Route
 }
 

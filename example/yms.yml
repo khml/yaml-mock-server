@@ -1,13 +1,20 @@
 cfg:
-    port: 3000
-    public: true
-    browser:
-      open: true
-      openPath: /
+  debug: false
+  port: 3000
+  public: false
+  browser:
+    open: true
+    openPath: /
 
 routes:
   - path: /
     file: home/index.html
 
+  - path: /index.css
+    file: home/index.css
+
   - path: /hello
     file: hello/index.html
+
+  - path: /hello/index.css
+    file: hello/index.css

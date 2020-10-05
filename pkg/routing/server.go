@@ -3,8 +3,7 @@ package routing
 import (
 	"log"
 	"net/http"
-	"os/exec"
-	"runtime"
+	"os"
 )
 
 func RunServer(setting Setting) {
@@ -12,12 +11,12 @@ func RunServer(setting Setting) {
 
 	if setting.Config.Public {
 		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			loggingRequest(r)
+			loggingRequest(r, "/", setting.Config.Debug)
 			http.ServeFile(w, r, r.URL.Path[1:])
 		})
 	} else {
 		for _, route := range setting.Routes {
-			makeHandler(route)
+			makeHandler(route, setting)
 		}
 	}
 
@@ -31,35 +30,45 @@ func RunServer(setting Setting) {
 	}
 }
 
-func loggingRequest(r *http.Request) {
-	log.Printf("[%s] %s FROM %s\n", r.Method, r.URL.Path, r.RemoteAddr)
+func loggingRequest(r *http.Request, route string, debug bool) {
+	log.Printf("Route=%s [%s] %s FROM %s\n", route, r.Method, r.URL.Path, r.RemoteAddr)
+
+	if debug {
+		log.Printf("%v\n", r)
+	}
 }
 
-func makeHandler(route Route) {
+func isNotFound(route Route, w http.ResponseWriter, r *http.Request) bool {
+	if r.URL.Path != route.Path {
+		http.NotFound(w, r)
+		return true
+	}
+	return false
+}
+
+func isNotFileExists(filepath string) error {
+	_, err := os.Stat(filepath)
+	if os.IsNotExist(err) {
+		return err
+	}
+	return nil
+}
+
+func makeHandler(route Route, setting Setting) {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		loggingRequest(r)
+		loggingRequest(r, route.Path, setting.Config.Debug)
+
+		if isNotFound(route, w, r) {
+			log.Printf("Not Found: %s\n", r.URL.Path)
+			return
+		}
+
+		if err := isNotFileExists(route.File); err != nil {
+			log.Printf("%s\n", err)
+			return
+		}
+
 		http.ServeFile(w, r, route.File)
 	}
 	http.HandleFunc(route.Path, fn)
-}
-
-func openBrowser(setting Setting) error {
-	var url string = "http://localhost:" + setting.Config.Port + setting.Config.Browser.OpenPath
-
-	var cmd string
-	var args []string
-
-	switch runtime.GOOS {
-	case "windows":
-		cmd = "cmd"
-		args = []string{"/c", "start"}
-	case "darwin":
-		cmd = "open"
-	case "linux":
-		cmd = "xdg-open"
-	default:
-		return nil
-	}
-	args = append(args, url)
-	return exec.Command(cmd, args...).Start()
 }
