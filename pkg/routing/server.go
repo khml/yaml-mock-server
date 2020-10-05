@@ -44,7 +44,7 @@ func makeHandler(route Route) {
 }
 
 func openBrowser(setting Setting) error {
-	var url string = "http://localhost:" + setting.Config.Port + setting.Config.Browser.OpenPath
+	var url = "http://localhost:" + setting.Config.Port + setting.Config.Browser.OpenPath
 
 	var cmd string
 	var args []string
