@@ -14,6 +14,7 @@ type Route struct {
 
 type Config struct {
 	Debug   bool
+	NoCache bool `yaml:"noCache"`
 	Port    string
 	Public  bool
 	Browser struct {
@@ -38,6 +39,8 @@ func ReadSetting(filename string) (Setting, error) {
 
 func readSettingFromYaml(fileBuffer []byte) (Setting, error) {
 	setting := Setting{}
+	setting.Config.NoCache = true
+
 	err := yaml.Unmarshal(fileBuffer, &setting)
 	if err != nil {
 		fmt.Println(err)
@@ -47,14 +50,18 @@ func readSettingFromYaml(fileBuffer []byte) (Setting, error) {
 }
 
 func LoggingSetting(c Setting) {
+	fmt.Println("Config ------")
 	fmt.Printf("Port = %s\n", c.Config.Port)
 	fmt.Printf("Public = %t \n", c.Config.Public)
+	fmt.Printf("noCache = %t \n", c.Config.NoCache)
 
 	if c.Config.Public {
 		return
 	}
 
+	fmt.Println("\nRouting ------")
 	for _, route := range c.Routes {
 		fmt.Printf("path = %s, file = %s\n", route.Path, route.File)
 	}
+	fmt.Println()
 }

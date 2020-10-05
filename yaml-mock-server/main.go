@@ -21,5 +21,5 @@ func main() {
 	}
 	routing.LoggingSetting(setting)
 
-	routing.RunServer(setting)
+	routing.RunServer(&setting)
 }

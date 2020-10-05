@@ -5,7 +5,7 @@ import (
 	"runtime"
 )
 
-func openBrowser(setting Setting) error {
+func openBrowser(setting *Setting) error {
 	var url = "http://localhost:" + setting.Config.Port + setting.Config.Browser.OpenPath
 
 	var cmd string
