@@ -10,5 +10,11 @@ routes:
   - path: /
     file: home/index.html
 
+  - path: /index.css
+    file: home/index.css
+
   - path: /hello
     file: hello/index.html
+
+  - path: /hello/index.css
+    file: hello/index.css
