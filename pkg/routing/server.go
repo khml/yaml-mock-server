@@ -33,13 +33,25 @@ func loggingRequest(r *http.Request, route string, debug bool) {
 	log.Printf("Route=%s [%s] %s FROM %s\n", route, r.Method, r.URL.Path, r.RemoteAddr)
 
 	if debug {
-		log.Printf("%v", r)
+		log.Printf("%v\n", r)
 	}
+}
+
+func isNotFound(route Route, w http.ResponseWriter, r *http.Request) bool {
+	if r.URL.Path != route.Path {
+		http.NotFound(w, r)
+		return true
+	}
+	return false
 }
 
 func makeHandler(route Route, setting Setting) {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		loggingRequest(r, route.Path, setting.Config.Debug)
+		if isNotFound(route, w, r) {
+			log.Printf("Not Found: %s\n", r.URL.Path)
+			return
+		}
 		http.ServeFile(w, r, route.File)
 	}
 	http.HandleFunc(route.Path, fn)
