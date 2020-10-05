@@ -18,7 +18,7 @@ type Config struct {
 	Public  bool
 	Browser struct {
 		Open     bool
-		OpenPath string
+		OpenPath string `yaml:"openPath"`
 	}
 }
 
