@@ -68,7 +68,9 @@ func makeHandler(route Route, setting Setting) {
 			return
 		}
 
-		w.Header().Set("Cache-Control", "no-cache")
+		if setting.Config.NoCache {
+			w.Header().Set("Cache-Control", "no-cache")
+		}
 
 		http.ServeFile(w, r, route.File)
 	}
