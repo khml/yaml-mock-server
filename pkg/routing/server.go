@@ -3,6 +3,7 @@ package routing
 import (
 	"log"
 	"net/http"
+	"os"
 )
 
 func RunServer(setting Setting) {
@@ -45,13 +46,28 @@ func isNotFound(route Route, w http.ResponseWriter, r *http.Request) bool {
 	return false
 }
 
+func isNotFileExists(filepath string) error {
+	_, err := os.Stat(filepath)
+	if os.IsNotExist(err) {
+		return err
+	}
+	return nil
+}
+
 func makeHandler(route Route, setting Setting) {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		loggingRequest(r, route.Path, setting.Config.Debug)
+
 		if isNotFound(route, w, r) {
 			log.Printf("Not Found: %s\n", r.URL.Path)
 			return
 		}
+
+		if err := isNotFileExists(route.File); err != nil {
+			log.Printf("%s\n", err)
+			return
+		}
+
 		http.ServeFile(w, r, route.File)
 	}
 	http.HandleFunc(route.Path, fn)
