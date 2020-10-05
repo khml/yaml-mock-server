@@ -1,9 +1,10 @@
 cfg:
-    port: 3000
-    public: true
-    browser:
-      open: true
-      openPath: /
+  debug: false
+  port: 3000
+  public: true
+  browser:
+    open: true
+    openPath: /
 
 routes:
   - path: /
