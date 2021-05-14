@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
-	"yaml-mock-server/pkg/routing"
+
+	"local.packages.yaml-mock-server/routing"
 )
 
 func main() {
