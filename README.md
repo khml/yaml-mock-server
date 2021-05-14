@@ -8,7 +8,7 @@ cfg:
   debug: false # Run Debug Mode. logging request if true
   noCache: false # set Cache-Control: no-cache header if true
   port: 3000
-  public: false # allow access to public-dir (execute dir)
+  public: false # allow access to public-dir (execute dir). ignore routing settings if `public` is true
   browser:
     open: true # open browser when run yaml-mock-server if true
     openPath: / # open path if open browser
