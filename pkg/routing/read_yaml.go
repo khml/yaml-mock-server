@@ -21,6 +21,10 @@ type Config struct {
 		Open     bool
 		OpenPath string `yaml:"openPath"`
 	}
+	Auth struct {
+		Id       string
+		Password string
+	}
 }
 
 type Setting struct {
@@ -54,6 +58,7 @@ func LoggingSetting(c Setting) {
 	fmt.Printf("Port = %s\n", c.Config.Port)
 	fmt.Printf("Public = %t \n", c.Config.Public)
 	fmt.Printf("noCache = %t \n", c.Config.NoCache)
+	fmt.Printf("basicAuth = %t \n", needBasicAuth(&c.Config))
 
 	if c.Config.Public {
 		return

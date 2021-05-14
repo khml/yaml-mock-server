@@ -10,10 +10,7 @@ func RunServer(setting *Setting) {
 	println("Running Server now")
 
 	if setting.Config.Public {
-		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			loggingRequest(r, "/", setting.Config.Debug)
-			http.ServeFile(w, r, r.URL.Path[1:])
-		})
+		http.HandleFunc("/", makePublicHandler(setting))
 	} else {
 		for _, route := range setting.Routes {
 			makeHandler(route, setting)
@@ -27,6 +24,22 @@ func RunServer(setting *Setting) {
 	err := http.ListenAndServe(":"+setting.Config.Port, nil)
 	if err != nil {
 		println(err)
+	}
+}
+
+func makePublicHandler(setting *Setting) func(http.ResponseWriter, *http.Request) {
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		loggingRequest(r, "/", setting.Config.Debug)
+		http.ServeFile(w, r, r.URL.Path[1:])
+	}
+
+	if !needBasicAuth(&setting.Config) {
+		return handler
+	}
+
+	basicAuth := makeBasicAuth(&setting.Config)
+	return func(w http.ResponseWriter, r *http.Request) {
+		authProxy(w, r, basicAuth, handler)
 	}
 }
 
@@ -74,5 +87,14 @@ func makeHandler(route Route, setting *Setting) {
 
 		http.ServeFile(w, r, route.File)
 	}
-	http.HandleFunc(route.Path, fn)
+
+	if !needBasicAuth(&setting.Config) {
+		http.HandleFunc(route.Path, fn)
+		return
+	}
+
+	basicAuth := makeBasicAuth(&setting.Config)
+	http.HandleFunc(route.Path, func(w http.ResponseWriter, r *http.Request) {
+		authProxy(w, r, basicAuth, fn)
+	})
 }

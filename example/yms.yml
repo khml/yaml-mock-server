@@ -3,8 +3,11 @@ cfg:
   port: 3000
   public: false
   browser:
-    open: true
+    open: false
     openPath: /
+  auth:
+    id: admin
+    password: password
 
 routes:
   - path: /
